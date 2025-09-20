@@ -1,7 +1,6 @@
-// src/App.tsx
 import React from 'react';
 
-import { Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { FormEditor } from './components/FormEditor';
 import { FormRenderer } from './components/FormRenderer';
 import { useFormsStore } from './stores/formsStore';
@@ -16,15 +15,13 @@ export const App: React.FC = () => {
   return (
     <Grid container>
       <Grid size={{ xs: 12, md: 6 }}>
-        <div id="editor">
-          <FormEditor />
-        </div>
+        <FormEditor />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         {demoForm && (
-          <div id="renderer" style={{ marginTop: 24 }}>
+          <Box id="renderer" sx={{ marginTop: 10, position: 'sticky', top: 30 }} >
             <FormRenderer form={demoForm} onSubmit={(v) => alert(JSON.stringify(v, null, 2))} />
-          </div>
+          </Box>
         )}
       </Grid>
     </Grid>
