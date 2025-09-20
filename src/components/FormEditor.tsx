@@ -1,37 +1,43 @@
-// src/components/FormEditor/FormEditor.tsx
-import React, { useState } from 'react';
-import type { Form, Element, Choice } from '../types/general';
-import { v4 as uuidv4 } from 'uuid';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
-  Container,
-  TextField,
+  Box,
   Button,
-  Paper,
-  Typography,
-  Select,
-  MenuItem,
   Checkbox,
+  Container,
   FormControlLabel,
   IconButton,
-  Box
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useFormsStore } from '../stores/formsStore';
+import type { Choice, Element, Form } from '../types/general';
 
 export const FormEditor: React.FC = () => {
-  const { forms, createForm, updateForm } = useFormsStore();
+  const { forms, createForm, updateForm, selectedFormId, setSelectedFormId } = useFormsStore();
   const [name, setName] = useState('');
-  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [elements, setElements] = useState<Element[]>([]);
 
+  useEffect(() => {
+    const currentForm = forms.find((x) => x.id === selectedFormId)!;
+    if (currentForm)
+      setElements(currentForm.elements); // show the selected form on refresh page
+  }, [])
+
   const selectForm = (id: string | null) => {
-    setSelectedFormId(id);
+    setSelectedFormId(id); // store selected form
+
     if (!id) {
       setName('');
       setElements([]);
       return;
     }
+
     const f = forms.find((x) => x.id === id)!;
     setName(f.name);
     setElements(f.elements);
