@@ -93,8 +93,8 @@ export const FormRenderer: React.FC<Props> = ({ form, onSubmit }) => {
                 );
 
               case 'checkbox':
+                // inside FormRenderer.tsx, case 'checkbox' for choices
                 if (el.choices && el.choices.length > 0) {
-                  // checkbox group -> value stored as array of choice ids
                   return (
                     <Controller
                       key={el.id}
@@ -103,26 +103,30 @@ export const FormRenderer: React.FC<Props> = ({ form, onSubmit }) => {
                       defaultValue={[]}
                       render={({ field }) => {
                         const value: string[] = field.value || [];
+
                         return (
                           <FormGroup>
                             <Typography sx={{ mt: 2 }}>{el.label}</Typography>
-                            {el.choices!.map((c) => (
-                              <FormControlLabel
-                                key={c.id}
-                                control={
-                                  <Checkbox
-                                    checked={value.includes(c.id)}
-                                    onChange={(e) => {
-                                      const newVal = e.target.checked
-                                        ? [...value, c.id]
-                                        : value.filter((v) => v !== c.id);
-                                      field.onChange(newVal);
-                                    }}
-                                  />
-                                }
-                                label={c.name}
-                              />
-                            ))}
+                            {el.choices!.map((c) => {
+                              const val = c.name.toLowerCase().replace(/\s+/g, '-'); // convert label to value
+                              return (
+                                <FormControlLabel
+                                  key={c.id}
+                                  control={
+                                    <Checkbox
+                                      checked={value.includes(val)}
+                                      onChange={(e) => {
+                                        const newVal = e.target.checked
+                                          ? [...value, val]
+                                          : value.filter((v) => v !== val);
+                                        field.onChange(newVal);
+                                      }}
+                                    />
+                                  }
+                                  label={c.name} // show original label
+                                />
+                              );
+                            })}
                             {errors[el.id] && (
                               <Typography variant="caption" color="error">
                                 {errors[el.id]?.message as string}
@@ -133,7 +137,8 @@ export const FormRenderer: React.FC<Props> = ({ form, onSubmit }) => {
                       }}
                     />
                   );
-                } else {
+                }
+                else {
                   // single boolean checkbox
                   return (
                     <Controller
