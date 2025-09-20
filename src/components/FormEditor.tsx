@@ -19,7 +19,7 @@ import { useFormsStore } from '../stores/formsStore';
 import type { Choice, Element, Form } from '../types/general';
 
 export const FormEditor: React.FC = () => {
-  const { forms, createForm, updateForm, selectedFormId, setSelectedFormId } = useFormsStore();
+  const { forms, createForm, updateForm, deleteForm, selectedFormId, setSelectedFormId } = useFormsStore();
   const [name, setName] = useState('');
   const [elements, setElements] = useState<Element[]>([]);
 
@@ -41,6 +41,18 @@ export const FormEditor: React.FC = () => {
     const f = forms.find((x) => x.id === id)!;
     setName(f.name);
     setElements(f.elements);
+  };
+
+  const handleDeleteForm = () => {
+    if (!selectedFormId) return;
+    const formName = forms.find((x) => x.id === selectedFormId)?.name;
+    if (confirm(`Are you sure to delte "${formName}"?`)) {
+      deleteForm(selectedFormId);
+      // reset editor to "new form"
+      setSelectedFormId(null);
+      setName('');
+      setElements([]);
+    }
   };
 
   const addElement = (type: Element['type']) => {
@@ -79,7 +91,7 @@ export const FormEditor: React.FC = () => {
     <Container maxWidth="md">
       <Typography variant="h4" sx={{ mt: 3 }}>Form Editor</Typography>
       <Paper sx={{ p: 2, mt: 2 }}>
-        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <TextField label="Form name" value={name} onChange={(e) => setName(e.target.value)} />
           <Select
             value={selectedFormId ?? ''}
@@ -91,7 +103,15 @@ export const FormEditor: React.FC = () => {
               <MenuItem key={f.id} value={f.id}>{f.name}</MenuItem>
             ))}
           </Select>
-          <Button variant="contained" onClick={save}>Save</Button>
+          <Button variant="contained" size='large' onClick={save}>
+            {selectedFormId ? 'Save' : 'Create'}
+          </Button>
+          {selectedFormId && (
+            <Button variant="outlined" size='large' color="error" onClick={handleDeleteForm}>
+              <DeleteIcon />
+              Delete
+            </Button>
+          )}
         </Box>
 
         <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
