@@ -7,6 +7,7 @@ import {
   Button,
   Checkbox,
   Container,
+  FormControl,
   FormControlLabel,
   FormGroup,
   Paper,
@@ -122,9 +123,7 @@ export const FormRenderer: FC<Props> = ({ form, onSubmit }) => {
                               );
                             })}
                             {errors[el.id] && (
-                              <Typography variant="caption" color="error">
-                                {errors[el.id]?.message as string}
-                              </Typography>
+                              <Typography variant="caption" color="error">{errors[el.id]?.message as string}</Typography>
                             )}
                           </FormGroup>
                         );
@@ -140,11 +139,15 @@ export const FormRenderer: FC<Props> = ({ form, onSubmit }) => {
                       name={el.id}
                       control={control}
                       defaultValue={false}
-                      render={({ field }) => (
-                        <FormControlLabel
-                          control={<Checkbox {...field} checked={!!field.value} />}
-                          label={el.label}
-                        />
+                      rules={{ required: el.isRequired }}
+                      render={({ field, fieldState: { error } }) => (
+                        <FormControl error={!!error} component="fieldset">
+                          <FormControlLabel
+                            control={<Checkbox {...field} checked={!!field.value} />}
+                            label={el.label}
+                          />
+                          {error && <Typography variant="caption" color="error">{error.message}</Typography>}
+                        </FormControl>
                       )}
                     />
                   );
