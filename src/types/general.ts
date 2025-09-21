@@ -1,4 +1,3 @@
-// src/types.ts
 export interface Choice {
   id: string;
   name: string;

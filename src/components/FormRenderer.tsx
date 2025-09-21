@@ -1,18 +1,17 @@
-// src/components/FormRenderer/FormRenderer.tsx
-import React, { useMemo } from 'react';
-import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMemo, type FC } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import type { Form } from '../types/general';
 
 import {
   Button,
-  TextField,
   Checkbox,
+  Container,
   FormControlLabel,
   FormGroup,
-  Typography,
   Paper,
-  Container
+  TextField,
+  Typography
 } from '@mui/material';
 import { buildYupSchema } from '../utils/yupBuilder';
 
@@ -21,14 +20,10 @@ interface Props {
   onSubmit?: (values: any) => void;
 }
 
-export const FormRenderer: React.FC<Props> = ({ form, onSubmit }) => {
+export const FormRenderer: FC<Props> = ({ form, onSubmit }) => {
   const validationSchema = useMemo(() => buildYupSchema(form), [form]);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    formState: { errors }
+  const { control, handleSubmit, watch, formState: { errors }
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {}
@@ -57,7 +52,6 @@ export const FormRenderer: React.FC<Props> = ({ form, onSubmit }) => {
     });
   };
 
-
   const handleFormSubmit = (vals: any) => {
     if (onSubmit) onSubmit(vals);
     else console.log('Form submitted', vals);
@@ -66,7 +60,7 @@ export const FormRenderer: React.FC<Props> = ({ form, onSubmit }) => {
   return (
     <Container maxWidth="sm">
       <Paper sx={{ p: 3, mt: 4 }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>{form.name}</Typography>
+        <Typography variant="h5" sx={{ mb: 2 }} textTransform='uppercase'>{form.name}</Typography>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
           {form.elements.map((el) => {

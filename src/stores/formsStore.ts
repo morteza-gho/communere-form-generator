@@ -1,4 +1,3 @@
-// src/store/formsStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Form } from '../types/general';
@@ -12,7 +11,6 @@ interface FormsState {
   deleteForm: (id: string) => void;
   getFormById: (id: string) => Form | undefined;
   clearAll: () => void;
-
 }
 
 export const useFormsStore = create<FormsState>()(

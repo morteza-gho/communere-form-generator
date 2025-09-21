@@ -1,4 +1,3 @@
-// src/utils/yupBuilder.ts
 import * as yup from 'yup';
 import type { Form, Element } from '../types/general';
 
@@ -31,9 +30,11 @@ export function buildYupSchema(form: Form) {
     const base = getBaseSchema(el);
 
     if (el.conditions && el.conditions.length > 0) {
+
       // for now we support only single condition that references one target element.
       // If multiple conditions exist, we'll combine with logical AND.
       const deps = el.conditions.map((c) => c.targetElementId);
+
       // build when with array dependency
       shape[el.id] = yup.mixed().when(deps, (...args: any[]) => {
         const values = args.slice(0, deps.length);
@@ -45,7 +46,9 @@ export function buildYupSchema(form: Form) {
           // Loose equality check; adapt as needed
           return targetValue === cond.valueToMatch;
         });
+
         return allMatch ? base : originalSchema.notRequired();
+
       });
     } else {
       shape[el.id] = base;
