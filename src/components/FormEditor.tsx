@@ -23,8 +23,10 @@ export const FormEditor: React.FC = () => {
 
   useEffect(() => {
     const currentForm = forms.find((x) => x.id === selectedFormId)!;
-    if (currentForm)
+    if (currentForm) {
+      setName(currentForm.name);
       setElements(currentForm.elements); // show the selected form on refresh page
+    }
   }, [])
 
   const selectForm = (id: string | null) => {
